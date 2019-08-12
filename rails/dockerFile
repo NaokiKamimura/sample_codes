@@ -1,0 +1,29 @@
+# https://hub.docker.com/_/centos
+# docker pull centos
+FROM centos:latest
+
+RUN yum -y update && \
+    yum -y install \
+    git \
+    vim \
+    epel-release \
+    readline-devel \
+    bzip2 \
+    openssl-devel \
+    libyaml-devel \
+    zlib-devel \
+    gcc \
+    make
+
+RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && \
+    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile && \
+    echo 'eval "$(rbenv init -)"' >> ~/.bash_profile && \
+    source ~/.bash_profile && \
+    mkdir -p "$(rbenv root)"/plugins && \
+    git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build && \
+    rbenv install 2.4.2 && \
+    rbenv global 2.4.2 && \
+    rbenv rehash
+
+RUN gem install bundler
+RUN yum -y install sqlite-devel
